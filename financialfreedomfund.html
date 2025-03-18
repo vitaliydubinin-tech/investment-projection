@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Financial Freedom Fund Growth</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; }
+        table { width: 80%; margin: 20px auto; border-collapse: collapse; }
+        th, td { border: 1px solid black; padding: 8px; text-align: right; }
+        th { background-color: #f2f2f2; }
+        label { font-size: 20px; display: block; margin: 10px 0; }
+        input { background-color: blue; color: white; font-size: 18px; padding: 8px; width: 200px; margin-left: 10px; }
+        button { font-size: 20px; padding: 10px 20px; margin: 15px; }
+    </style>
+</head>
+<body>
+    <h2>Financial Freedom Fund Growth</h2>
+    <label>Starting Savings Capital ($): <input type="number" id="startingCapital" value="0"></label>
+    <label>Income ($): <input type="number" id="income" value="5000" oninput="updateSavings()"></label>
+    <label>Percentage Of Income Saved %: <input type="number" id="incomePercentage" value="10" oninput="updateSavings()"></label>
+    <label>Monthly Savings ($): <input type="number" id="savings" value="500" readonly></label>
+    <label>Annual Return (%): <input type="number" id="returnRate" value="7"></label>
+    <label>Quarterly Savings Increase (%): <input type="number" id="quarterlyIncrease" value="10"></label>
+    <label>Years: <input type="number" id="years" value="30" max="50"></label>
+    <button onclick="calculateProjection()">Calculate</button>
+    
+    <table id="resultTable">
+        <thead>
+            <tr>
+                <th>Year</th>
+                <th>Actual Saved ($)</th><th>Total Freedom Fund ($)</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+    
+    <script>
+        function updateSavings() {
+            let income = parseFloat(document.getElementById('income').value);
+            let percentage = parseFloat(document.getElementById('incomePercentage').value) / 100;
+            document.getElementById('savings').value = (income * percentage).toFixed(2);
+        }
+        
+        function calculateProjection() {
+            let savings = parseFloat(document.getElementById('savings').value);
+            let returnRate = parseFloat(document.getElementById('returnRate').value) / 100;
+            let quarterlyIncrease = parseFloat(document.getElementById('quarterlyIncrease').value) / 100;
+            let years = parseInt(document.getElementById('years').value);
+            let tbody = document.querySelector('#resultTable tbody');
+            tbody.innerHTML = '';
+            
+            let total = parseFloat(document.getElementById('startingCapital').value);
+            let actualSaved = parseFloat(document.getElementById('startingCapital').value);
+            let monthlyRate = returnRate / 12;
+            
+            for (let year = 1; year <= years; year++) {
+                for (let month = 1; month <= 12; month++) {
+                    actualSaved += savings;
+                    total = (total + savings) * (1 + monthlyRate);
+                    
+                    // Apply quarterly increase every 3 months
+                    if (month % 3 === 0) {
+                        savings *= (1 + quarterlyIncrease);
+                    }
+                }
+                let row = `<tr><td>${year}</td><td>${actualSaved.toFixed(2)}</td><td>${total.toFixed(2)}</td></tr>`;
+                tbody.innerHTML += row;
+            }
+        }
+    </script>
+</body>
+</html>
